@@ -27,6 +27,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Implementation of the HubSpotAuthService interface, providing methods to handle
+ * HubSpot authentication, contact creation, and webhook events.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -53,6 +57,11 @@ public class HubSpotAuthServiceImpl implements HubSpotAuthService {
     private final TokensResponseCreator tokensResponseCreator;
 
 
+    /**
+     * Generates an authorization URL to initiate the OAuth 2.0 authorization flow.
+     *
+     * @return The fully constructed authorization URL as a String.
+     */
     public String generateAuthUrl() {
         String baseUrl = "https://app.hubspot.com/oauth/authorize";
         String encodedRedirectUri = URLEncoder.encode(redirectUri, StandardCharsets.UTF_8);
@@ -67,6 +76,15 @@ public class HubSpotAuthServiceImpl implements HubSpotAuthService {
                 "&response_type=code";
     }
 
+    /**
+     * Handles the OAuth callback by exchanging an authorization code for tokens from the API.
+     * Communicates with the authorization server to fetch the tokens necessary for subsequent API interactions.
+     *
+     * @param code the authorization code provided by the authorization server after user consent
+     * @return an instance of TokensResponse containing the tokens and associated data
+     * @throws TokenExchangeError if an error occurs during the token exchange process
+     * @throws MissingOrUnknownAuthCodeException if the provided authorization code is missing or invalid
+     */
     @Override
     public TokensResponse callback(String code) {
 
@@ -100,6 +118,13 @@ public class HubSpotAuthServiceImpl implements HubSpotAuthService {
         }
     }
 
+    /**
+     * Creates a new contact in HubSpot using the provided contact details and authentication token.
+     *
+     * @param contactRequest the request object containing contact details such as email, first name, and last name
+     * @param token the authentication token used for authorization when interacting with the HubSpot API
+     * @return a ResponseEntity containing the response from the HubSpot API; may include the created contact information or an error message
+     */
     @Override
     public ResponseEntity<?> createContact(HubSpotContactRequest contactRequest, String token) {
 
@@ -130,6 +155,13 @@ public class HubSpotAuthServiceImpl implements HubSpotAuthService {
         }
     }
 
+    /**
+     * Handles incoming webhook events received from HubSpot.
+     * Processes the list of webhook event requests and logs information for specific event types.
+     *
+     * @param events a list of HubSpotWebhookEventRequest objects representing the webhook events
+     *               received from HubSpot
+     */
     @Override
     public void webhookReceived(List<HubSpotWebhookEventRequest> events) {
         for (HubSpotWebhookEventRequest event : events) {

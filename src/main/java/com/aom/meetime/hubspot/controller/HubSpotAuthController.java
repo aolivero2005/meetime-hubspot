@@ -16,6 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 import java.util.List;
 
+/**
+ * Controller for managing HubSpot authentication and integration functionalities.
+ * <p>
+ * This controller provides endpoints to interact with HubSpot authentication, contact creation, and webhook
+ * event handling. It facilitates communication between the application and HubSpot APIs.
+ */
 @RestController
 @RequestMapping("/hubspot")
 @RequiredArgsConstructor

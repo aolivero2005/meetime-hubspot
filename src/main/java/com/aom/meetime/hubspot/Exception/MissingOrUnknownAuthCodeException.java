@@ -6,5 +6,4 @@ public class MissingOrUnknownAuthCodeException extends RuntimeException {
         super(message);
     }
 
-
 }
