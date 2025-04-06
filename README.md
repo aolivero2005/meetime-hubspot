@@ -96,3 +96,54 @@ Você pode testar os endpoints usando ferramentas como Postman, Insomnia ou cURL
 
 # Coleção de Postman
 [HubSpot.postman_collection.json](docs/HubSpot.postman_collection.json)
+
+
+# Para possíveis melhorias
+
+1. ### **Validação e Segurança**
+Atualmente, valores sensíveis como `clientId`, `secretClientId` e outros dados de configuração estão diretamente 
+utilizando `@Value`. Uma melhoria seria usar um cofre de segredos (como AWS Secrets Manager, Vault, ou Spring 
+Cloud Vault) para armazenar essas credenciais de forma segura.
+
+Garantir validação adequada em endpoints e serviços, como no `HubSpotContactRequest` (e.g., formatar e validar o email) 
+usando anotações do Jakarta Bean Validation como `@Valid` e `@Email`.
+
+Implementar algo, como rate limiting, para proteger os endpoints, especialmente os que recebem Webhooks, contra ataques 
+como DDoS ou spam.
+
+2. ### **Eficiência e Escalabilidade**
+
+Caso os tokens de autenticação sejam reutilizáveis por determinados períodos, um cache poderia ser implementado para 
+evitar múltiplas trocas de código/token desnecessárias. Utilizar frameworks como Spring Cache com Redis pode ajudar.
+
+Processamento paralelo de eventos recebidos no método `webhookReceived`, utilizando algo como `CompletableFuture` no 
+Spring, pode ser uma solução para lidar com grandes volumes de eventos.
+
+3. ### **Observabilidade e Transparência**
+
+Adicione valores únicos (como trace IDs ou request IDs) ao log para rastrear requisições de ponta a ponta
+
+Bibliotecas como Micrometer (já integrada ao Spring Boot) para expor métricas de performance das APIs, como tempos de resposta, número de erros, etc.
+
+4. ### **Manutenção**
+
+Separação de Configurações por Ambiente, garantir que todas as variáveis configuráveis (como redirects Uri, clientId) 
+estejam separadas para ambientes como produção, staging e desenvolvimento.
+
+Testes unitários para cada método.
+
+Testes de integração para fluxos que dependem da API do HubSpot.
+
+Simular Webhooks para garantir que o comportamento esperado acontece conforme os eventos recebidos.
+
+
+
+
+
+
+
+
+
+
+
+
